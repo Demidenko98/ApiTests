@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace APITests
 {
@@ -17,35 +18,37 @@ namespace APITests
         HttpClient httpClient = new HttpClient();
         HttpResponseMessage response = new HttpResponseMessage();
         string responseBody;
-        public RootJsonPlanets myDeserializedClassPlanets = new RootJsonPlanets();
-        public RootJsonMovies myDeserializedClassMovies = new RootJsonMovies();
+        public DeserializedJsonPlanets myDeserializedClassPlanets = new DeserializedJsonPlanets();
+        public DeserializedJsonMovies myDeserializedClassMovies = new DeserializedJsonMovies();
         public TokenClass myDeserializedLoginResponse_token = new TokenClass();
 
 
         
-        public async void Get(string url)
+        public async Task<HttpResponseMessage> Get(string url)
         {
-            
-            response = await httpClient.GetAsync(url);
+            response =  await httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
             responseBody = await response.Content.ReadAsStringAsync();
+            return response;
         }
 
-        public async void Post(string URL, HttpContent content)
+      
+        public async Task<HttpResponseMessage> Post(string URL, HttpContent content)
         {
             response = await httpClient.PostAsync(URL,content);
             response.EnsureSuccessStatusCode();
-            responseBody = response.Content.ReadAsStringAsync().Result;
+            responseBody = await response.Content.ReadAsStringAsync();
+            return response;
         }
 
         public StringContent SerealizeCredentials()
         {
             Credentials credentials = new Credentials 
             {
-                email= "eve.holt@reqres.in",
-                password = "cityslicka"
+                email = ConfigController.ConfigurationFilreRead("email"),
+                password = ConfigController.ConfigurationFilreRead("password")
             };
-
+     
             string json = JsonConvert.SerializeObject(credentials, Formatting.Indented);
             StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
            
@@ -60,12 +63,12 @@ namespace APITests
 
         public void DeserealizePlanets()
         {
-            myDeserializedClassPlanets = JsonConvert.DeserializeObject<RootJsonPlanets>(responseBody);
+            myDeserializedClassPlanets = JsonConvert.DeserializeObject<DeserializedJsonPlanets>(responseBody);
         }
 
         public void DeserealizeMovies()
         {
-            myDeserializedClassMovies = JsonConvert.DeserializeObject<RootJsonMovies>(responseBody);
+            myDeserializedClassMovies = JsonConvert.DeserializeObject<DeserializedJsonMovies>(responseBody);
         }
 
         public string GetFirstPlanetURLFromJson()
@@ -86,12 +89,17 @@ namespace APITests
                 return 0;
         }
 
-        public void GetAllMoviesName()
+        public string[] GetAllMoviesName()
         {
-            foreach (var item in myDeserializedClassMovies.Results)
+            string[] allMoviesName = new string[myDeserializedClassMovies.Results.Count];
+            for (int i=0; i<myDeserializedClassMovies.Results.Count;i++)
             {
-                Console.WriteLine(item.Title);
+                allMoviesName[i] = myDeserializedClassMovies.Results[i].Title;
+                Console.WriteLine(allMoviesName[i]);
             }
+
+            return allMoviesName;
+
         }
     }
 }

@@ -4,12 +4,7 @@ using System.Text;
 
 namespace APITests.Data
 {
-    class DeserializedJsonMovies
-    {
-
-    }
-
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+   
     public class ResultJsonMovies
     {
         public string Title { get; set; }
@@ -28,7 +23,7 @@ namespace APITests.Data
         public string Url { get; set; }
     }
 
-    public class RootJsonMovies
+    public class DeserializedJsonMovies
     {
         public int Count { get; set; }
         public object Next { get; set; }

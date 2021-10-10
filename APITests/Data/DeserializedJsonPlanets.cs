@@ -4,11 +4,7 @@ using System.Text;
 
 namespace APITests.Data
 {
-    class DeserializedJsonPlanets
-    {
-
-    }
-
+  
     public class ResultJsonPlanets
     {
         public string Name { get; set; }
@@ -27,7 +23,7 @@ namespace APITests.Data
         public string Url { get; set; }
     }
 
-    public class RootJsonPlanets
+    public class DeserializedJsonPlanets
     {
         public int Count { get; set; }
         public string Next { get; set; }

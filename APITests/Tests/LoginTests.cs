@@ -14,14 +14,15 @@ namespace APITests.Tests
         [Test]
         public void GetAuthorizationToken()
         {
-            BaseApi baseApi = new BaseApi();
-          
-            StringContent content = baseApi.SerealizeCredentials();
-           
-            baseApi.Post(URL.loginURL,content);
-            Thread.Sleep(15000);
+            BaseApi baseApi = new BaseApi();    
+            StringContent content = baseApi.SerealizeCredentials();    
+            baseApi.Post(URL.loginURL,content).Wait(); 
             baseApi.DeserealizeLoginResponseToken();
-            Console.WriteLine(baseApi.myDeserializedLoginResponse_token.token);       
+            string expectedTokenValue = "QpwL5tke4Pnpja7X4";
+            string actualTokenValue = baseApi.myDeserializedLoginResponse_token.token;
+            // Console.WriteLine(baseApi.myDeserializedLoginResponse_token.token);  
+          //  new ConfigController().ConnectToConfigJson();
+            Assert.AreEqual(expectedTokenValue, actualTokenValue);  //Check response token corresponds expectedTokenValue
         }
     }
 }

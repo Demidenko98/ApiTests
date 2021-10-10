@@ -6,20 +6,14 @@ namespace APITests
 {
     public class StarWarsApiTests
     {
-       // [SetUp]
-        public void Setup()
-        {
-        }
 
         [Test]
         public void CheckCountEquals61InResponse()
         {
             BaseApi baseApi = new BaseApi();
-            baseApi.Get(URL.planetURL);
-            Thread.Sleep(10000);
+            baseApi.Get(URL.planetURL).Wait();
             baseApi.DeserealizePlanets();
             Console.WriteLine(baseApi.myDeserializedClassPlanets.Count);
-
             int expectedCount = 61;
             int actualCount = baseApi.myDeserializedClassPlanets.Count;
             Assert.AreEqual(expectedCount, actualCount); //Check that expected Count value corresponds to actualCount
@@ -30,14 +24,13 @@ namespace APITests
         public void FirstPlanetApiReturns200()
         {
             BaseApi baseApi = new BaseApi();
-            baseApi.Get(URL.planetURL);
-            Thread.Sleep(40000);
+            baseApi.Get(URL.planetURL).Wait();
             baseApi.DeserealizePlanets();
             string firstPlanetURL = baseApi.GetFirstPlanetURLFromJson();
-            baseApi.Get(firstPlanetURL);
+            baseApi.Get(firstPlanetURL).Wait();
             int expectedStatusCode = 200;
-            int actualResponseCode = baseApi.CheckResponseCode();        
-            Assert.AreEqual(expectedStatusCode, actualResponseCode); // Check Response Code is 200
+            int actualResponseCode = baseApi.CheckResponseCode();
+            Assert.AreEqual(expectedStatusCode, actualResponseCode); // Check firstPlanetURL Response Code is 200
         }
 
 
@@ -45,10 +38,20 @@ namespace APITests
         public void GetMovieName()
         {
             BaseApi baseApi = new BaseApi();
-            baseApi.Get(URL.filmsURL);
-            Thread.Sleep(10000);
+            baseApi.Get(URL.filmsURL).Wait();
             baseApi.DeserealizeMovies();
-            baseApi.GetAllMoviesName();
+            string[] expectedMoviesNamesList = new string[]
+         { "A New Hope",
+            "The Empire Strikes Back",
+            "Return of the Jedi",
+            "The Phantom Menace",
+            "Attack of the Clones",
+            "Revenge of the Sith"
+         };
+            string[] actualMoviesNamesList = baseApi.GetAllMoviesName();
+            Assert.AreEqual(expectedMoviesNamesList, actualMoviesNamesList); //Check the expectedMoviesNamesList corresponds to actualMoviesNamesList
+
+
         }
     }
 }
